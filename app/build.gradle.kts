@@ -1,121 +1,78 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt.gradle)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.compose.compiler)
+    id("com.android.application")
+    kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
     namespace = "com.example.dogslista"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.dogslista"
-        minSdk = 29
+        minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // Enable Room auto-migrations
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
+
     buildFeatures {
         compose = true
     }
-}
-
-kapt {
-    correctErrorTypes = true
-    arguments {
-        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-android-compiler:2.50")
 
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
-    // Core Android dependencies
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
-    // Hilt Dependency Injection
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    // Hilt and instrumented tests
-    androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.android.compiler)
-    // Hilt and Robolectric tests
-    testImplementation(libs.hilt.android.testing)
-    kaptTest(libs.hilt.android.compiler)
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
 
-    // Arch Components
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
-    // Compose
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    // Tooling
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    // Instrumented tests
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("androidx.compose.compiler:compiler:1.5.4")
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.material:material:1.6.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
 
-    // Local tests: jUnit, coroutines, Android runner
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
-    // Instrumented tests: jUnit rules and runners
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.runner)
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("androidx.compose.material:material:1.6.1")
 
-    // Retrofit for networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
 
-    // Theme
-    // Material Design 3 (Material You)
-    implementation(libs.androidx.material3)
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
 
-    // Optional: Material Design 3 window size class
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
-
-    // Compose UI dependencies (if not already included)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.tooling.preview)
-    debugImplementation(libs.androidx.ui.tooling)
 }
